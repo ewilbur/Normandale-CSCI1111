@@ -13,5 +13,8 @@ int main(void) {
     for (; i < 3; ++i, printf("For he's a jolly good fellow!\n"))
         ;
     printf("Which nobody can deny!\n");
+
+   printf("Press any character to continue");
+   getchar();
     return 0;
 }

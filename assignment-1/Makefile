@@ -23,8 +23,8 @@ two_func.out: two_func.c
 nogood.out: nogood.c
 	$(COMPILE) $(FLAGS) -o nogood.out nogood.c
 
-exercise-3.out: nogood.c
-	$(COMPILE) $(FLAGS) -o exercise-3.out nogood.c
+exercise-3.out: exercise-3.c
+	$(COMPILE) $(FLAGS) -o exercise-3.out exercise-3.c
 
 exercise-4.out: exercise-4.c
 	$(COMPILE) $(FLAGS) -o exercise-4.out exercise-4.c

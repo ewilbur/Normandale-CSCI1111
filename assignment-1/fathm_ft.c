@@ -17,5 +17,7 @@ int main(void) {
     printf("There are %d feet in %d fathoms!\n", feet, fathoms);
     printf("Yes, I said %d feet!\n", 6 * fathoms);
 
+    printf("Press any character to continue");
+    getchar();
     return 0;
 }
