@@ -1,6 +1,10 @@
 /*
- * exercise4.c
- * Created by Evan Wilbur for CSCI1111 Summer 2020
+ * @program exercise-4.c
+ * @author Evan Wilbur
+ * @course CSCI 1111
+ * @semester Summer 2020
+ * @description Answer for exercise 4 which prints out the same string 3 times
+ *              and then finishes the jingle.
  */
 #include <stdio.h>
 

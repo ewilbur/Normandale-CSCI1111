@@ -1,6 +1,10 @@
 /*
- * two_func.c
- * Created by Evan Wilbur for CSCI1111 Summer 2020
+ * @program two_func.c
+ * @author Evan Wilbur
+ * @course CSCI 1111
+ * @semester Summer 2020
+ * @description Textbook example of forward declaration of function. Two
+ *              functions in this file. This is copied from the textbook. 
  */
 #include <stdio.h>
 

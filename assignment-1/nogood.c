@@ -1,6 +1,12 @@
 /*
- * nogood.c
- * Created by Evan Wilbur for CSCI1111 Summer 2020
+ * @program nogood.c
+ * @author Evan Wilbur
+ * @course CSCI 1111
+ * @semester Summer 2020
+ * @description Bug fix example from the textbook. The original bugged code was
+ *              commented out with the proper syntax and logic written below it.
+ *              Other comments attempt to explain what was changed and what the
+ *              bug was.
  */
 #include <stdio.h>
 

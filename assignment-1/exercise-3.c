@@ -1,6 +1,10 @@
 /*
- * exercise-3.c
- * Created by Evan Wilbur for CSCI1111 Summer 2020
+ * @program exercise-3.c
+ * @author Evan Wilbur
+ * @course CSCI 1111
+ * @semester Summer 2020
+ * @description This program takes in a number of years and returns the number
+ *              of days. Ignores leap years and fractional years.
  */
 #include <stdio.h>
 

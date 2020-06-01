@@ -1,6 +1,11 @@
-/*
- * fathm_ft.c
- * Created by Evan Wilbur for CSCI1111 Summer 2020
+/* 
+ * @program fathm_ft.c
+ * @author Evan Wilbur
+ * @course CSCI 1111
+ * @semester Summer 2020
+ * @description This program is copied from the textbook. Little to nothing is
+ *              changed from the original. This program converts 6 feet to
+ *              fathoms.
  */
 #include <stdio.h>
 
