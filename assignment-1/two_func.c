@@ -1,3 +1,7 @@
+/*
+ * two_func.c
+ * Created by Evan Wilbur for CSCI1111 Summer 2020
+ */
 #include <stdio.h>
 
 void butler(void);

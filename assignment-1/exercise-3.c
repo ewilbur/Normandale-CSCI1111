@@ -1,3 +1,7 @@
+/*
+ * exercise-3.c
+ * Created by Evan Wilbur for CSCI1111 Summer 2020
+ */
 #include <stdio.h>
 
 #define DAYS_PER_YEAR 365
