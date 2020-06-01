@@ -14,5 +14,6 @@ int main(void) {
     /* | Logic error */
     /* printf("n = %d, n squared = %d, n cubed = &d\n", n, n2, n3); */
      printf("n = %d, n squared = %d, n to the forth = %d\n", n, n2, n3);
+     /* ^ The correct operation being done here is raising to the forth power, not the third.*/
     return 0;
 }
