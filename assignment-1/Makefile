@@ -18,7 +18,7 @@ fathm_ft.out: fathm_ft.c
 	$(COMPILE) $(FLAGS) -o fathm_ft.out fathm_ft.c
 
 two_func.out: two_func.c
-	$(COMPILE) $(FLAGS) -o two_func.out nogood.c
+	$(COMPILE) $(FLAGS) -o two_func.out two_func.c
 
 nogood.out: nogood.c
 	$(COMPILE) $(FLAGS) -o nogood.out nogood.c
