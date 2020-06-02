@@ -16,10 +16,10 @@ int main (void) {
    unsigned int user_years;
    printf("Enter an age in years: ");
    scanf("%u", &user_years);
+   getchar(); /* Read in the newline that is still in the buffer */
    printf("You are %u days old\n", years_to_days(user_years));
 
    printf("Press any character to continue");
-   getchar();
    getchar();
    return 0;
 }
