@@ -27,3 +27,7 @@ int main (void) {
 unsigned int years_to_days(unsigned int years) {
     return years * DAYS_PER_YEAR;
 }
+/*
+ * Enter an age in years: You are 12410 days old
+ * Press any character to continue
+ */

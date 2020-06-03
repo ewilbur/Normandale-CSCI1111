@@ -23,3 +23,9 @@ int main(void) {
     getchar();
     return 0;
 }
+
+/*
+ * I am a simple computer.
+ * My favorite number is 1 because it is first.
+ * Press any character to continue
+ */

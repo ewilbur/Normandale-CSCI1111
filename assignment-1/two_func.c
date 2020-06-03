@@ -23,3 +23,9 @@ int main(void) {
 void butler(void) {
     printf("You rang, sir?\n");
 }
+/*
+ * I will summon the butler function.
+ * You rang, sir?
+ * Yes. Bring me some tea and writeable DVDs.
+ * Press any character to continue
+ */

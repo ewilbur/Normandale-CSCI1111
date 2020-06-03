@@ -25,3 +25,7 @@ int main(void) {
     getchar();
     return 0;
 }
+/*
+ * n = 5, n squared = 25, n to the forth = 625
+ * Press any character to continue
+ */

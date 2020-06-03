@@ -21,3 +21,8 @@ int main(void) {
     getchar();
     return 0;
 }
+/*
+ * There are 12 feet in 2 fathoms!
+ * Yes, I said 12 feet!
+ * Press any character to continue
+ */
