@@ -62,8 +62,7 @@ static const int TENDER_VALUES[]
 #define NUM_TENDER (sizeof(TENDER_VALUES) / sizeof(int))
 
 int main_dev(int, char **);
-bool validate_currency_input(const char *);
-int read_currency_string(const char *);
+int parse_tender_string(const char *);
 
 int main(int argc, char **argv) {
 #ifdef DEV
@@ -72,31 +71,37 @@ int main(int argc, char **argv) {
 }
 
 int main_dev(int argc, char **argv) {
+
+    char user_input[256];
+    memset(user_input, 0, 256);
+    while (true) {
+        printf("enter a currency value: ");
+        scanf("%s", user_input);
+        printf("Converted: %d\n", parse_tender_string(user_input));
+    }
     return 0;
 }
 
-int read_currency_string(const char *tender) {
-}
-
-bool validate_currency_input(const char *tender) {
-    size_t i = 0;
-    size_t j = 0;
-    /* Check that each char before the decimal is a digit */
-    while (tender[i] != '\0' && tender[i] != '.') {
-        if (!isdigit(tender[i])) return false;
-        ++i;
+/* Parse a string containing a currency value. If the parse fails, returns -1.
+ * Acceptable currency formats:
+ *      a) 0.XX
+ *      b) XX...X.XX
+ *      c) XX...X
+ *      d) .XX
+ *      e) 0.XX
+ *      f) XX...X.X
+ */
+int parse_tender_string(const char *tender) {
+    size_t i = 0, j = 0;
+    int tender_total = 0;
+    while (tender[i + j] != '\0') {
+        if (tender[i + j] == '.' && j == 0) j = 1;
+        if (tender[i + j] == '\0') break;
+        if (!isdigit(tender[i + j]) || j >= 3) return -1;
+        tender_total *= 10;
+        tender_total += tender[i + j] - '0';
+        j == 0 ? ++i : ++j;
     }
-    if (tender[i] == '\0') return false;
-    /* Otherwise, we have to make sure:
-     *  a) There are exactly two chars after the decimal
-     *  b) Each of those two chars are digits
-     */
-    for (j = 1; j < 3; ++j) {
-        if (tender[i + j] == '\0') return false;
-        if (!isdigit(tender[i + j])) return false;
-    }
-    /* After checking two placed after the decimal point (see above) if we've
-     * reached the end of the input then the input is valid
-     */
-    return tender[i + j] == '\0';
+    if (j == 0) j = 1;
+    return tender_total * pow(10, 3 - j);
 }
