@@ -1,5 +1,5 @@
 COMPILE = gcc
-FLAGS = -W -Wall -Werror -pedantic -ansi
+FLAGS = -W -Wall -pedantic -ansi
 PROGS = change.c my_int_operators.c
 
 all: $(PROGS)
