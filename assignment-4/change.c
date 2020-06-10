@@ -1,9 +1,11 @@
 /*
-
-
-
-	change program
-*/
+ * @author Evan Wilbur
+ * @class CSCI 1111
+ * @section 10
+ * @description  A simple calculator to find the change. No really anything
+ *               too special here. I really just slapped this together to
+ *               complete the project. There are many rooms for improvement
+ */
 
 
 #include <stdio.h>
