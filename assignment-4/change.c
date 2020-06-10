@@ -12,100 +12,146 @@
 #include <string.h>
 #include <stdbool.h>
 #include <math.h>
+#include <stdlib.h>
+
+#define TENDER_STRING_LENGTH 32
+static const char SINGULAR_TENDER_NAMES[][TENDER_STRING_LENGTH]
+    = { "penny",
+        "nickel",
+        "dime", 
+        "quarter",
+        "dollar",
+        "five dollar",
+        "ten dollar",
+        "twenty dollar",
+        "fifty dollar",
+        "hundered dollar" };
+
+static const char PLURAL_TENDER_NAMES[][TENDER_STRING_LENGTH]
+    = { "pennies",
+        "nickels",
+        "dimes",
+        "quarters",
+        "dollars",
+        "five dollars",
+        "ten dollars",
+        "twenty dollars",
+        "fifty dollars",
+        "hundred dollars" };
+
+
+static const int TENDER_VALUES[]
+    = { 1,
+        5,
+        10,
+        25,
+        100,
+        500,
+        1000,
+        2000 };
+
+#define NUM_TENDER (sizeof(TENDER_VALUES) / sizeof(int))
 
 typedef struct {
-    unsigned pennies;
-    unsigned nickles;
-    unsigned dimes;
-    unsigned quarters;
-    unsigned dollars;
-    unsigned fivers;
-    unsigned tenners;
-    unsigned twenties;
-} change;
+    int tender_values[NUM_TENDER];
+    int num_tender[NUM_TENDER];
+} Tender;
 
-void clear_change(change*);
-void print_change(change*);
+void printchange(Tender *);
+void mkchange(Tender *, int);
 void flush_buffer();
-void make_change(unsigned, change*);
-unsigned dollar_amount_to_cents(float dollar_amount);
-
+Tender *mktender();
+void freetender(Tender *);
+int currency_to_cents(float);
 
 int main() {
-    float user_paid = 0.;
-    float user_owes = 0.;
-    unsigned paid_owes_difference = 0;
-    int i = 0;
-    change user_change;
-    clear_change(&user_change);
+    float amount_paid = 0;
+    float amount_owed = 0;
+
+    int amount_paid_cent = 0;
+    int amount_owed_cent = 0;
+    int amount_in_change = 0;
+
+    int read_word_count = 0;
+
+    Tender *tender = mktender();
 
     do {
         printf("Enter the amount you owe: ");
-        i = scanf("%f", &user_owes);
-        if (i <= 0) printf("Invalid input!\n");
-        flush_buffer();
-    } while (i <= 0);
+        read_word_count = scanf("%f", &amount_owed);
+        if (read_word_count <= 0) {
+            fprintf(stderr, "Invalid amount entered\n");
+            flush_buffer();
+        }
+        amount_owed_cent = currency_to_cents(amount_owed);
+    } while (read_word_count <= 0);
 
     do {
         printf("Enter the amount you paid: ");
-        i = scanf("%f", &user_paid);
-        if (i <= 0) printf("Invalid input!\n");
-        flush_buffer();
-    } while (i <= 0);
+        read_word_count = scanf("%f", &amount_paid);
+        if (read_word_count <= 0) {
+            fprintf(stderr, "Invalid amount entered\n");
+            flush_buffer();
+        }
+        amount_paid_cent = currency_to_cents(amount_paid);
+    } while (read_word_count <= 0);
 
-    paid_owes_difference = dollar_amount_to_cents(user_paid) - dollar_amount_to_cents(user_owes);
+    amount_in_change = amount_paid_cent - amount_owed_cent;
+    if (amount_in_change < 0) printf("Amount paid is less than amount owed. No change.\n");
+    else {
+        mkchange(tender, amount_in_change);
+        printchange(tender);
+    }
 
-    make_change( paid_owes_difference,
-                &user_change);
-    print_change(&user_change);
+    freetender(tender);
 
-    printf("Press 'q' to quit or any other key to go again: ");
-    if (getchar() == 'q') return 0;
-    else                  return main();
+    flush_buffer();
+    printf("Enter 'q' to quit or any other key to go again: ");
+    if (getchar() != 'q') return main();
+    else return 0;
 }
 
-void clear_change(change *chng) {
-    if (chng == NULL) return;
-    memset(chng, 0, sizeof(change));
+int currency_to_cents(float currency) {
+    return (int)floor(currency * 100.);
 }
 
-void print_change(change *chng) {
-    if (chng == NULL) return;
-    printf("pennies = %u\n" , chng->pennies); 
-    printf("nickles = %u\n" , chng->nickles); 
-    printf("dimes = %u\n"   , chng->dimes); 
-    printf("quarters = %u\n", chng->quarters); 
-    printf("dollars = %u\n" , chng->dollars); 
-    printf("fives = %u\n"   , chng->fivers); 
-    printf("tens = %u\n"    , chng->tenners); 
-    printf("twenties = %u\n", chng->twenties); 
+void printchange(Tender *tender) {
+    int i = 0;
+    int total_change = 0;
+    float actual_change = 0.;
+
+    for (; i < NUM_TENDER; ++i) {
+        printf("%s = %d\n", 
+                tender->num_tender[i] != 1 ? PLURAL_TENDER_NAMES[i] : SINGULAR_TENDER_NAMES[i], 
+                tender->num_tender[i]);
+        total_change += tender->num_tender[i] * tender->tender_values[i];
+    }
+
+    actual_change = ((float)total_change) / 100.0;
+    printf("Total change: %.2f\n", actual_change);
+}
+
+void mkchange(Tender *tender, int change) {
+    int i = NUM_TENDER - 1;
+
+    for (; i >= 0; --i) {
+        tender->num_tender[i] = (change / tender->tender_values[i]);
+        change -= tender->tender_values[i] * tender->num_tender[i];
+    }
+}
+
+Tender *mktender() {
+    Tender *tender = malloc(sizeof(Tender));
+    memmove(&tender->tender_values, TENDER_VALUES, sizeof(TENDER_VALUES));
+    memset(&tender->num_tender, 0, sizeof(NUM_TENDER));
+    return tender;
+}
+
+void freetender(Tender *tender) {
+    free(tender);
 }
 
 void flush_buffer() {
-    while (getchar() != '\n');
-}
-
-void make_change(unsigned paid_difference, change *user_change) {
-    if (user_change == NULL) return;
-    user_change->twenties = paid_difference / 2000;
-    paid_difference %= 2000;
-    user_change->tenners = paid_difference / 1000;
-    paid_difference %= 1000;
-    user_change->fivers = paid_difference / 500;
-    paid_difference %= 500;
-    user_change->dollars = paid_difference / 100;
-    paid_difference %= 100;
-    user_change->quarters = paid_difference / 25;
-    paid_difference %= 25;
-    user_change->dimes = paid_difference / 10;
-    paid_difference %= 10;
-    user_change->nickles = paid_difference / 5;
-    paid_difference %= 5;
-    user_change->pennies = paid_difference / 1;
-    paid_difference %= 1;
-}
-
-unsigned dollar_amount_to_cents(float dollar_amount) {
-    dollar_amount *= 100.0;
-    return (unsigned)floor((double)dollar_amount);
+    volatile char c;
+    while ((c = getchar()) != '\n' || c != EOF);
 }
