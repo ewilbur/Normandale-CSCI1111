@@ -35,9 +35,9 @@ int main() {
     float user_paid = 0.;
     float user_owes = 0.;
     unsigned paid_owes_difference = 0;
+    int i = 0;
     change user_change;
     clear_change(&user_change);
-    int i = 0;
 
     do {
         printf("Enter the amount you owe: ");

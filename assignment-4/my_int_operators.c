@@ -112,6 +112,7 @@ int prompt_menu() {
 
 int get_rand(int lb, int ub) {
     static bool rand_seeded = false;
+    int random_int_range = ub - lb + 1;
 
     if (!rand_seeded) {
 #if defined(DEVEL)
@@ -122,14 +123,13 @@ int get_rand(int lb, int ub) {
         rand_seeded = true;
     }
 
-    int random_int_range = ub - lb + 1;
     return (rand() % random_int_range) + lb;
 }
 
 /* Possible integer semigroups for jump-table */
 
 int integer_add(int op1, int op2) {
-    return op1 + op1;
+    return op1 + op2;
 }
 
 int integer_sub(int op1, int op2) {
