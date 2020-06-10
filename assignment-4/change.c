@@ -50,24 +50,79 @@ static const int DENOMINATION_VALUES[]
         2000 };
 
 #define NUM_DENOMINATION (sizeof(DENOMINATION_VALUES) / sizeof(int))
+#undef DEV
+
+static const size_t USER_INPUT_BUFFER_SIZE = 64;
 
 typedef struct {
     int denomination[NUM_DENOMINATION];
 } Tender;
 
-int main_dev(int, char **);
+int main_dev();
 int parse_tender_string(const char *);
 void mkchange(Tender *, int);
 void render_tender(Tender *);
+char * strip_whitespace(char *);
+int get_user_cents(const char *);
 
-int main(int argc, char **argv) {
+int main() {
 #ifdef DEV
-    return main_dev(argc, argv);
-#endif
+    return main_dev();
+#else
+    Tender change;
+    char user_owed_input[USER_INPUT_BUFFER_SIZE];
+    char user_paid_input[USER_INPUT_BUFFER_SIZE];
+    int user_paid_cents = 0;
+    int user_owed_cents = 0;
 
+    memset(user_owed_input, 0, sizeof(char) * USER_INPUT_BUFFER_SIZE);
+    memset(user_paid_input, 0, sizeof(char) * USER_INPUT_BUFFER_SIZE);
+
+    user_owed_cents = get_user_cents("Enter the amount you owed: ");
+    user_paid_cents = get_user_cents("Enter the amount you paid: ");
+
+    if (user_paid_cents < user_owed_cents)
+        printf("Cannot make change. You did not give enough\n");
+    else {
+        mkchange(&change, user_paid_cents - user_owed_cents);
+        render_tender(&change);
+    }
+
+    printf("\nPress 'q' to quit. Otherwise, press any character to go again: ");
+    if (getchar() == 'q') return 0;
+    return main();
+
+#endif
 }
 
-int main_dev(int argc, char **argv) {
+int get_user_cents(const char *prompt) {
+    char user_currency_str[USER_INPUT_BUFFER_SIZE];
+    int user_currency = 0;
+    printf("%s", prompt);
+    fgets(user_currency_str, USER_INPUT_BUFFER_SIZE, stdin);
+
+    if (user_currency_str == NULL) {
+        fprintf(stderr, "error: could not read from stdin\n");
+        exit(-1);
+    }
+    user_currency = parse_tender_string(strip_whitespace(user_currency_str));
+    if (user_currency < 0) {
+        fprintf(stderr, "error: invalid input\n");
+        return get_user_cents(prompt);
+    }
+    return user_currency;
+}
+
+char * strip_whitespace(char *str) {
+    char *end = str + strnlen(str, USER_INPUT_BUFFER_SIZE) - 1;
+
+    while (isspace(*end) && end != str) end--;
+    while (isspace(*str) && str != end) str++;
+    end[1] = '\0';
+    return str;
+}
+
+int main_dev() {
 
     char user_input[256];
     memset(user_input, 0, 256);
@@ -107,16 +162,6 @@ void mkchange(Tender *change, int total) {
     change->denomination[0] = total;
 }
 
-
-/* Parse a string containing a currency value. If the parse fails, returns -1.
- * Acceptable currency formats:
- *      a) 0.XX
- *      b) XX...X.XX
- *      c) XX...X
- *      d) .XX
- *      e) 0.XX
- *      f) XX...X.X
- */
 int parse_tender_string(const char *tender) {
     size_t i = 0, j = 0;
     int tender_total = 0;
