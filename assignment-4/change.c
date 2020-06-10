@@ -123,7 +123,7 @@ int currency_to_cents(float currency) {
 }
 
 void printchange(Tender *tender) {
-    int i = 0;
+    size_t i = 0;
     int total_change = 0;
     float actual_change = 0.;
 
@@ -150,7 +150,7 @@ void mkchange(Tender *tender, int change) {
 Tender *mktender() {
     Tender *tender = malloc(sizeof(Tender));
     memmove(&tender->tender_values, TENDER_VALUES, sizeof(TENDER_VALUES));
-    memset(&tender->num_tender, 0, sizeof(NUM_TENDER));
+    memset(&tender->num_tender, 0, sizeof(TENDER_VALUES));
     return tender;
 }
 
@@ -160,5 +160,5 @@ void freetender(Tender *tender) {
 
 void flush_buffer() {
     volatile char c;
-    while ((c = getchar()) != '\n' || c != EOF);
+    while ((c = getchar()) != '\n');
 }
