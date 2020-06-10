@@ -2,9 +2,15 @@
  * @author Evan Wilbur
  * @class CSCI 1111
  * @section 10
- * @description  A simple calculator to find the change. No really anything
- *               too special here. I really just slapped this together to
- *               complete the project. There are many rooms for improvement
+ * @description An improved calculator. Seperate data structure to store the
+ *              change. Hopefully this allows the program to be more extendible
+ *              if different coins are required (eg fifty cent coin). If the
+ *              need for higher denominations is required, simply add to
+ *              TENDER_VALUES. The only important thing to keep in mind is that
+ *              the names and values in SINGLUAR_TENDER_NAMES,
+ *              PLURAL_TENDER_NAMES, and TENDER_VALUES must correlate. As in,
+ *              the index of each must be consistent otherwise the program
+ *              fails.
  */
 
 
@@ -15,10 +21,11 @@
 #include <stdlib.h>
 
 #define TENDER_STRING_LENGTH 32
+
 static const char SINGULAR_TENDER_NAMES[][TENDER_STRING_LENGTH]
     = { "penny",
         "nickel",
-        "dime", 
+        "dime",
         "quarter",
         "dollar",
         "five dollar",
@@ -121,8 +128,8 @@ void printchange(Tender *tender) {
     float actual_change = 0.;
 
     for (; i < NUM_TENDER; ++i) {
-        printf("%s = %d\n", 
-                tender->num_tender[i] != 1 ? PLURAL_TENDER_NAMES[i] : SINGULAR_TENDER_NAMES[i], 
+        printf("%s = %d\n",
+                tender->num_tender[i] != 1 ? PLURAL_TENDER_NAMES[i] : SINGULAR_TENDER_NAMES[i],
                 tender->num_tender[i]);
         total_change += tender->num_tender[i] * tender->tender_values[i];
     }
