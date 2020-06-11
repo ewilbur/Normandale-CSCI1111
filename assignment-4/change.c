@@ -104,7 +104,8 @@ int main() {
     } while (read_word_count <= 0);
 
     amount_in_change = amount_paid_cent - amount_owed_cent;
-    if (amount_in_change < 0) printf("Amount paid is less than amount owed. No change.\n");
+    if (amount_in_change < 0) 
+        printf("Amount paid is less than amount owed. No change.\n");
     else {
         mkchange(tender, amount_in_change);
         printchange(tender);
