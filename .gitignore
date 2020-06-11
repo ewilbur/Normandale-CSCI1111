@@ -69,3 +69,7 @@ Sessionx.vim
 tags
 # Persistent undo
 [._]*.un~
+
+# Misc
+*.zip
+*.ignore
