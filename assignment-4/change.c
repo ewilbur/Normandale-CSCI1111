@@ -75,8 +75,10 @@ int main() {
     memset(user_paid_input, 0, sizeof(char) * USER_INPUT_BUFFER_SIZE);
     memset(&change_owed, 0, sizeof(change_owed));
 
-    user_owed_cents = get_user_cents("Enter the amount you owed: ", USER_INPUT_BUFFER_SIZE);
-    user_paid_cents = get_user_cents("Enter the amount you paid: ", USER_INPUT_BUFFER_SIZE);
+    user_owed_cents = get_user_cents("Enter the amount you owed: ",
+    								 USER_INPUT_BUFFER_SIZE);
+    user_paid_cents = get_user_cents("Enter the amount you paid: ",
+    								 USER_INPUT_BUFFER_SIZE);
 
     if (user_paid_cents < user_owed_cents)
         printf("Cannot make change_owed. You did not give enough\n");
@@ -102,7 +104,9 @@ int get_user_cents(const char *prompt, size_t buffer_size) {
         printf("%s", prompt);
         fgets(currency_str, buffer_size, stdin);
         if (strnlen(currency_str, buffer_size) == buffer_size - 1) {
-            fprintf(stderr, "error: input overflow - truncating string to %s\n", currency_str);
+            fprintf(stderr,
+            		"error: input overflow - truncating string to %s\n",
+            		currency_str);
             handle_overflow();
         }
         currency_str = strip_whitespace(currency_str);
