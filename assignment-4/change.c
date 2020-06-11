@@ -50,7 +50,6 @@ static const int DENOMINATION_VALUES[]
         2000 };
 
 #define NUM_DENOMINATION (sizeof(DENOMINATION_VALUES) / sizeof(int))
-#undef DEV
 
 static const size_t USER_INPUT_BUFFER_SIZE = 64;
 
@@ -63,7 +62,8 @@ int parse_tender_string(const char *);
 void mkchange(Tender *, int);
 void render_tender(Tender *);
 char * strip_whitespace(char *);
-int get_user_cents(const char *);
+int get_user_cents(const char *, size_t);
+
 
 int main() {
 #ifdef DEV
@@ -77,9 +77,10 @@ int main() {
 
     memset(user_owed_input, 0, sizeof(char) * USER_INPUT_BUFFER_SIZE);
     memset(user_paid_input, 0, sizeof(char) * USER_INPUT_BUFFER_SIZE);
+    memset(&change, 0, sizeof(change));
 
-    user_owed_cents = get_user_cents("Enter the amount you owed: ");
-    user_paid_cents = get_user_cents("Enter the amount you paid: ");
+    user_owed_cents = get_user_cents("Enter the amount you owed: ", USER_INPUT_BUFFER_SIZE);
+    user_paid_cents = get_user_cents("Enter the amount you paid: ", USER_INPUT_BUFFER_SIZE);
 
     if (user_paid_cents < user_owed_cents)
         printf("Cannot make change. You did not give enough\n");
@@ -89,62 +90,81 @@ int main() {
     }
 
     printf("\nPress 'q' to quit. Otherwise, press any character to go again: ");
-    if (getchar() == 'q') return 0;
+    if (getchar() == 'q') 
+        return 0;
     return main();
 
 #endif
 }
 
-int get_user_cents(const char *prompt) {
-    char user_currency_str[USER_INPUT_BUFFER_SIZE];
-    int user_currency = 0;
-    printf("%s", prompt);
-    fgets(user_currency_str, USER_INPUT_BUFFER_SIZE, stdin);
+int main_dev() {
+    Tender change;
+    char user_owed_input[USER_INPUT_BUFFER_SIZE];
+    char user_paid_input[USER_INPUT_BUFFER_SIZE];
+    int user_paid_cents = 0;
+    int user_owed_cents = 0;
 
-    if (user_currency_str == NULL) {
-        fprintf(stderr, "error: could not read from stdin\n");
-        exit(-1);
+    memset(user_owed_input, 0, sizeof(char) * USER_INPUT_BUFFER_SIZE);
+    memset(user_paid_input, 0, sizeof(char) * USER_INPUT_BUFFER_SIZE);
+    memset(&change, 0, sizeof(change));
+
+    user_owed_cents = get_user_cents("Enter the amount you owed: ", USER_INPUT_BUFFER_SIZE);
+    user_paid_cents = get_user_cents("Enter the amount you paid: ", USER_INPUT_BUFFER_SIZE);
+
+    if (user_paid_cents < user_owed_cents)
+        printf("Cannot make change. You did not give enough\n");
+    else {
+        mkchange(&change, user_paid_cents - user_owed_cents);
+        render_tender(&change);
     }
-    user_currency = parse_tender_string(strip_whitespace(user_currency_str));
-    if (user_currency < 0) {
-        fprintf(stderr, "error: invalid input\n");
-        return get_user_cents(prompt);
-    }
-    return user_currency;
+
+    printf("\nPress 'q' to quit. Otherwise, press any character to go again: ");
+    if (getchar() == 'q') 
+        return 0;
+    return main();
+
+}
+int get_user_cents(const char *prompt, size_t buffer_size) {
+    char *currency_str = (char*)malloc(sizeof(char) * buffer_size);
+    void *free_temp = currency_str;
+    int currency_amount = 0;
+
+    if (currency_str == NULL) return -1;
+    
+    do {
+        printf("%s", prompt);
+        fgets(currency_str, buffer_size, stdin);
+        currency_str = strip_whitespace(currency_str);
+        currency_amount = parse_tender_string(currency_str);
+        if (currency_amount < 0) {
+            fprintf(stderr, 
+                    "error: invalid input on currency amount: %s\n", 
+                    currency_str);
+        }
+    } while (currency_amount < 0);
+
+    free(free_temp);
+    return currency_amount;
+
 }
 
-char * strip_whitespace(char *str) {
+char *strip_whitespace(char *str) {
+    if (str == NULL) return NULL;
     char *end = str + strnlen(str, USER_INPUT_BUFFER_SIZE) - 1;
-
-    while (isspace(*end) && end != str) end--;
-    while (isspace(*str) && str != end) str++;
+    while (isspace(*end) && str < end)
+        end--;
+    while (isspace(*str) && str < end)
+        str++;
     end[1] = '\0';
     return str;
 }
 
-int main_dev() {
-
-    char user_input[256];
-    memset(user_input, 0, 256);
-    while (true) {
-        int user_total = 0;
-        Tender tender;
-        printf("Enter a currency value: ");
-        scanf("%s", user_input);
-        user_total = parse_tender_string(user_input);
-        if (user_total < 0) {
-            printf("Error in parse: %s\n", user_input);
-            continue;
-        }
-        mkchange(&tender, user_total);
-        render_tender(&tender);
-    }
-    return 0;
-}
-
 void render_tender(Tender *tender) {
+    if (tender == NULL) return;
+    
     size_t i = 0;
     int total = 0;
+
     for (; i < NUM_DENOMINATION; ++i) {
         printf("%s = %d\n", SINGULAR_DENOMINATION_NAMES[i], tender->denomination[i]);
         total += tender->denomination[i] * DENOMINATION_VALUES[i];
@@ -154,25 +174,36 @@ void render_tender(Tender *tender) {
 }
 
 void mkchange(Tender *change, int total) {
-    size_t i = NUM_DENOMINATION - 1;
-    for (; i > 0; --i) {
-        change->denomination[i] = (int)total / (int)DENOMINATION_VALUES[i];
-        total %= DENOMINATION_VALUES[i];
+    if (change == NULL) return;
+
+    int *change_rear = &change->denomination[NUM_DENOMINATION - 1];
+    const int *value_rear  = &DENOMINATION_VALUES[NUM_DENOMINATION - 1];
+
+    while (change->denomination <= change_rear) {
+        *change_rear = total / *value_rear;
+        total %= *value_rear;
+        --change_rear;
+        --value_rear;
     }
-    change->denomination[0] = total;
 }
 
 int parse_tender_string(const char *tender) {
+    if (tender == NULL) return -1;
+
     size_t i = 0, j = 0;
     int tender_total = 0;
     while (tender[i + j] != '\0') {
-        if (tender[i + j] == '.' && j == 0) j = 1;
-        if (tender[i + j] == '\0') break;
-        if (!isdigit(tender[i + j]) || j >= 3) return -1;
+        if (tender[i + j] == '.' && j == 0)
+            j = 1;
+        if (tender[i + j] == '\0')
+            break;
+        if (!isdigit(tender[i + j]) || j >= 3)
+            return -1;
         tender_total *= 10;
         tender_total += tender[i + j] - '0';
         j == 0 ? ++i : ++j;
     }
-    if (j == 0) j = 1;
+    if (j == 0)
+        j = 1;
     return tender_total * pow(10, 3 - j);
 }
