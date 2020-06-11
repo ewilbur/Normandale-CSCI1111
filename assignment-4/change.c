@@ -81,7 +81,7 @@ int main() {
     								 USER_INPUT_BUFFER_SIZE);
 
     if (user_paid_cents < user_owed_cents)
-        printf("Cannot make change_owed. You did not give enough\n");
+        printf("Cannot make change. You did not give enough\n");
     else {
         mkchange(&change_owed, user_paid_cents - user_owed_cents);
         render_tender(&change_owed);
