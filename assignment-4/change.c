@@ -64,45 +64,66 @@ void flush_buffer();
 void handle_overflow();
 
 int main() {
+    /* | Let the max BUFFER to hold the user input be the default size */
     const size_t USER_INPUT_BUFFER_SIZE = DEFAULT_BUFFER_SIZE;
+    /* | Container to store the tender values of the change due */
     Tender change_owed;
-    char user_owed_input[USER_INPUT_BUFFER_SIZE];
-    char user_paid_input[USER_INPUT_BUFFER_SIZE];
     int user_paid_cents = 0;
     int user_owed_cents = 0;
 
-    memset(user_owed_input, 0, sizeof(char) * USER_INPUT_BUFFER_SIZE);
-    memset(user_paid_input, 0, sizeof(char) * USER_INPUT_BUFFER_SIZE);
+    /* | Initialize the change owed to zero */
     memset(&change_owed, 0, sizeof(change_owed));
 
-    user_owed_cents = get_user_cents("Enter the amount you owed: ", USER_INPUT_BUFFER_SIZE);
-    user_paid_cents = get_user_cents("Enter the amount you paid: ", USER_INPUT_BUFFER_SIZE);
+    /* | Prompt the user a message and store the parse cent input into their
+     * respective variables
+     */
+    user_owed_cents = get_user_cents("Enter the amount you owed: ",
+                                     USER_INPUT_BUFFER_SIZE);
+    user_paid_cents = get_user_cents("Enter the amount you paid: ",
+                                     USER_INPUT_BUFFER_SIZE);
 
     if (user_paid_cents < user_owed_cents)
+        /* ^ Can't make change if you paid less than you owe. */
         printf("Cannot make change_owed. You did not give enough\n");
     else {
+        /* ^ Otherwise, calculate the change and the bills/coins to pay it */
         mkchange(&change_owed, user_paid_cents - user_owed_cents);
+        /* | And print it out */
         render_tender(&change_owed);
     }
 
+    /* | Prompt the user if they want to go again */
     printf("\nPress 'q' to quit. Otherwise, press any character to go again: ");
     if (getchar() == 'q')
         return 0;
+    /* TODO Make this into a do-while loop instead of a recursive call */
     return main();
 }
 
+/* | Prompts the user to enter a monetary value, parses it, and returns the
+ *   parsed result. If there is an error parsing or allocating the memory to
+ *   store the user input, return -1.
+ */
 int get_user_cents(const char *prompt, size_t buffer_size) {
     char *currency_str = (char*)malloc(sizeof(char) * buffer_size);
     void *free_temp = currency_str;
     int currency_amount = 0;
 
+    /* | Return error if no memory can be allocated for the user input */
     if (currency_str == NULL) return -1;
 
     do {
+        /* ^ Print the prompt, get the input from the user. If there was too
+         * many character inputs, print an error message, truncate the input,
+         * and flush the rest of the buffer. If parsing fails, prompt for input
+         * again until successful parse.
+         */
         printf("%s", prompt);
         fgets(currency_str, buffer_size, stdin);
         if (strnlen(currency_str, buffer_size) == buffer_size - 1) {
-            fprintf(stderr, "error: input overflow - truncating string to %s\n", currency_str);
+            fprintf(stderr,
+                    "error: input overflow - truncating string to %s\n",
+                    currency_str);
             handle_overflow();
         }
         currency_str = strip_whitespace(currency_str);
@@ -118,10 +139,12 @@ int get_user_cents(const char *prompt, size_t buffer_size) {
     return currency_amount;
 }
 
+/* | Print the change owed */
 void render_tender(Tender *tender) {
     if (tender == NULL) return;
 
     size_t i = 0;
+    /* | Running total of change */
     int total = 0;
 
     for (; i < NUM_TENDER; ++i) {
@@ -154,14 +177,24 @@ int parse_tender_string(const char *tender) {
     int tender_total = 0;
 
     while (tender[i + j] != '\0') {
+        /* ^ We haven't reached the end of the input string */
         if (tender[i + j] == '.' && j == 0) {
+            /* ^ Encountered the first decimal (if it exists) */
+            /* | Move to the right of the decimal */
             j = 1;
+            /* | If it happens to be the end of the string, break out of the
+             * loop
+             */
             if (tender[i + j] == '\0') break;
         }
         if (!isdigit(tender[i + j]) || j >= 3)
+            /* ^ Error if we encounter a non-digit or we are three places after
+             * the decimal
+             */
             return -1;
         tender_total *= 10;
         tender_total += tender[i + j] - '0';
+        /* Increment i if we haven't encountered a decmial. Otherwise j */
         j == 0 ? ++i : ++j;
     }
     if (j == 0)
@@ -170,9 +203,11 @@ int parse_tender_string(const char *tender) {
 }
 
 char *strip_whitespace(char *str) {
+    /* | Can't strip whitespace of a NULL string */
     if (str == NULL) return NULL;
 
     const size_t USER_INPUT_BUFFER_SIZE = DEFAULT_BUFFER_SIZE;
+    /* | Pointer to the end of the string */
     char *end = str + strnlen(str, USER_INPUT_BUFFER_SIZE) - 1;
 
     while (isspace(*end) && str < end)
