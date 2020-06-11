@@ -25,7 +25,7 @@
 
 #define DEVELOPMENT
 #define TENDER_STRING_LENGTH 32
-#define DEFAULT_BUFFER_SIZE 128
+#define DEFAULT_BUFFER_SIZE 32
 
 static const char SINGULAR_TENDER_NAMES[][TENDER_STRING_LENGTH]
     = { "penny",
@@ -60,6 +60,8 @@ int parse_tender_string(const char *);
 void mkchange(Tender *, int);
 void render_tender(Tender *);
 char *strip_whitespace(char *);
+void flush_buffer();
+void handle_overflow();
 
 int main() {
     const size_t USER_INPUT_BUFFER_SIZE = DEFAULT_BUFFER_SIZE;
@@ -79,7 +81,7 @@ int main() {
     if (user_paid_cents < user_owed_cents)
         printf("Cannot make change_owed. You did not give enough\n");
     else {
-        mkchange_owed(&change_owed, user_paid_cents - user_owed_cents);
+        mkchange(&change_owed, user_paid_cents - user_owed_cents);
         render_tender(&change_owed);
     }
 
@@ -99,6 +101,10 @@ int get_user_cents(const char *prompt, size_t buffer_size) {
     do {
         printf("%s", prompt);
         fgets(currency_str, buffer_size, stdin);
+        if (strnlen(currency_str, buffer_size) == buffer_size - 1) {
+            fprintf(stderr, "error: input overflow - truncating string to %s\n", currency_str);
+            handle_overflow();
+        }
         currency_str = strip_whitespace(currency_str);
         currency_amount = parse_tender_string(currency_str);
         if (currency_amount < 0) {
@@ -177,3 +183,10 @@ char *strip_whitespace(char *str) {
     return str;
 }
 
+void flush_buffer() {
+    while (getchar() != '\n');
+}
+
+void handle_overflow() {
+    flush_buffer();
+}
