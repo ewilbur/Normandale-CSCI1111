@@ -23,7 +23,6 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#define DEVELOPMENT
 #define TENDER_STRING_LENGTH 32
 #define DEFAULT_BUFFER_SIZE 32
 

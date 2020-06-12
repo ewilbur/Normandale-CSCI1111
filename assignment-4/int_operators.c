@@ -12,15 +12,15 @@
 
 #define NUM_TESTS 10
 
-#include <stdio.h> 
+#include <stdio.h>
 #include <stdlib.h>
-#include <time.h> 
+#include <time.h>
 #include <stdbool.h>
 
 /* Type semigroup is a binary function that takes in two ints and returns
  * an int
  */
-typedef int (*int_semigroup)(int, int); 
+typedef int (*int_semigroup)(int, int);
 
 int get_rand(int, int); /* ^ Generate a random in within the range (inclusive) */
 int prompt_menu(); /* Print the menu to the user and return the selection */
@@ -81,13 +81,13 @@ static const int sub_op1_ub = 67;
 static const int sub_op2_lb =  2;
 static const int sub_op2_ub = 25;
 
-                    
-int main() {        
+
+int main() {
     while (true) {
         int choice = prompt_menu();
         if (choice == 0) break;
         else if (choice == -1) continue;
-       run_integer_test(choice); 
+       run_integer_test(choice);
     }
     printf("Goodbye!\n");
     return 0;
@@ -188,25 +188,25 @@ void get_operands(char symbol, int *op1, int *op2) {
             op2_lb = div_op2_lb;
             op2_ub = div_op2_ub;
             break;
-        case '%' : 
+        case '%' :
             op1_lb = mod_op1_lb;
             op1_ub = mod_op1_ub;
             op2_lb = mod_op2_lb;
             op2_ub = mod_op2_ub;
             break;
-        case '+' : 
+        case '+' :
             op1_lb = add_op1_lb;
             op1_ub = add_op1_ub;
             op2_lb = add_op2_lb;
             op2_ub = add_op2_ub;
             break;
-        case '*' : 
+        case '*' :
             op1_lb = mul_op1_lb;
             op1_ub = mul_op1_ub;
             op2_lb = mul_op2_lb;
             op2_ub = mul_op2_ub;
             break;
-        case '-' : 
+        case '-' :
             op1_lb = sub_op1_lb;
             op1_ub = sub_op1_ub;
             op2_lb = sub_op2_lb;
@@ -235,7 +235,6 @@ void run_integer_test(int choice) {
         invalid_selection();
         return;
     }
-    
     for (i = 0; i < num_tests; ++i) {
         int user_answer;
         int op1;
@@ -251,7 +250,6 @@ void run_integer_test(int choice) {
             invalid_selection();
             printf("%d %c %d = ? ", op1, symbol, op2);
         }
-
         if (answer == user_answer) {
             num_correct++;
             printf("Correct!\n\n");
