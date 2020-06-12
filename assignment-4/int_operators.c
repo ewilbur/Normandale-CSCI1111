@@ -262,8 +262,7 @@ void run_integer_test(int choice) {
 }
 
 void flush_buffer() {
-    char c;
-    for (c = getchar(); c != '\n'; c = getchar());
+    while (getchar() != '\n');
 }
 
 void invalid_selection() {
