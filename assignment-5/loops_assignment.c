@@ -1,11 +1,11 @@
 /*
-        CSCI 1111 
+        CSCI 1111
 
         Loop Assignment (Guaranteed to drive you loopy!)
-        Your assigment is to fill in the following functions 
-        with loops that will output the given output!(Listed as 
+        Your assigment is to fill in the following functions
+        with loops that will output the given output!(Listed as
         a comment at the end of the program)
-        
+
          You may have to count up or count down or even nest the loops.
 
         Good Luck!
@@ -14,6 +14,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+
 
 void loop_1(void);
 void loop_2(void);
@@ -25,23 +26,25 @@ void loop_7(void);
 void loop_8(void);
 void loop_9(void);
 
-int main()
-{
+
+
+int main() {
+
     printf("Problem 1\n");
     loop_1();
 
     printf("Problem 2\n");
     loop_2();
-    
+
     printf("Problem 3\n");
-    loop_3();	
+    loop_3();
 
     printf("Problem 4\n");
     loop_4();
 
     printf("Problem 5\n");
     loop_5();
-    
+
     printf("Problem 6\n");
     loop_6();
 
@@ -54,85 +57,102 @@ int main()
     printf("Problem 9\n");
     loop_9();
 
-    system("pause");
+    /* system("pause"); */
 	return EXIT_SUCCESS;
 }
 
-void loop_1(void)
-{
-  printf("\n\n"); 
-
+void loop_1(void) {
+  int i;
+  for (i = 1; i <= 20; ++i)
+      printf("%3d", i);
+  printf("\n\n");
 }
 
+void loop_2(void) {
+    int i = 105;
+    while (i -= 5)
+        printf("%3d", i);
+    printf("\n\n");
+}
+
+void loop_3(void) {
+    char c = 'A';
+    do {
+        printf("%2c", c);
+        ++c;
+    } while (c <= 'Z');
+
+    printf("\n\n");
+}
+
+void loop_4(void) {
+    char c = 'Z';
+    while (c >= 'A') {
+        printf("%2c", c);
+        c -= 2;
+    }
+    printf("\n\n");
+}
+
+void loop_5(void) {
+    int i, j;
+
+    for (i = 1; i < 5; ++i) {
+        for (j = 1; j < 10; ++j) {
+            printf("(%d,%d) ", i, j);
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+
+void loop_6(void) {
+    int i, j;
+    for (i = 1; i < 5; ++i) {
+        for (j = 1; j < 10; ++j) {
+            printf("%5d", i * j);
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+
+void loop_7(void) {
+    int i, j;
+    for (i = 1; i < 21; ++i) {
+        for (j = i; j > 0; --j) {
+            printf("%3d", j);
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+
+void loop_8(void) {
+    int i, j;
+    for (i = 0; i < 16; ++i) {
+        for (j = 3; j >= 0; --j) {
+            putchar(((i >> j) & 1) + '0');
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+
+void loop_9(void) {
+    int i, j;
+
+    for (i = 0x1; i < 0x10; ++i) {
+        for (j = 0x1; j < 0x10; ++j) {
+            printf("%5X", i * j);
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
 
 
 /*
-    you must do loop_2 with a while loop (just to make it a little more interesting :)  )
-*/
-void loop_2(void)
-{
-    printf("\n\n"); 
-}
-
-/*
-    you must do loop_3 with a do-while loop (to force you to use all three loops :)  )
-*/
-void loop_3(void)
-{
-    printf("\n\n"); 
-}
-
-void loop_4(void)
-{
-    printf("\n\n");  
-}
-
-/*
-    hint: for the remaining loops try nesting your loop structures
-*/
-
-void loop_5(void)
-{
-    printf("\n\n"); 
-}
-
-void loop_6(void)
-{
-    printf("\n\n"); 
-
-}
-
-void loop_7(void)
-{
-    printf("\n\n"); 
-}
-
-/*
-    notice that this one is like counting in binary from 0000 to 1111
-*/
-
-void loop_8(void)
-{
-     printf("\n\n"); 
-
-}
-
-
-
-/*
-    notice that this one is actually a muliplication table in hexadecimal
-*/
-
-void loop_9(void)
-{
-
-     printf("\n\n"); 
-
-}
-
-/*
-    output
-
 Problem 1
   1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20
 
@@ -179,9 +199,7 @@ Problem 7
  19 18 17 16 15 14 13 12 11 10  9  8  7  6  5  4  3  2  1
  20 19 18 17 16 15 14 13 12 11 10  9  8  7  6  5  4  3  2  1
 
-
 Problem 8
-
 0000
 0001
 0010
@@ -215,13 +233,4 @@ Problem 9
     D   1A   27   34   41   4E   5B   68   75   82   8F   9C   A9   B6   C3
     E   1C   2A   38   46   54   62   70   7E   8C   9A   A8   B6   C4   D2
     F   1E   2D   3C   4B   5A   69   78   87   96   A5   B4   C3   D2   E1
-
-Press any key to continue . . .
 */
-
-
-
-
-
-
-
