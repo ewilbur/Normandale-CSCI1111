@@ -1,16 +1,10 @@
 /*
-        CSCI 1111
-
-        Loop Assignment (Guaranteed to drive you loopy!)
-        Your assigment is to fill in the following functions
-        with loops that will output the given output!(Listed as
-        a comment at the end of the program)
-
-         You may have to count up or count down or even nest the loops.
-
-        Good Luck!
-
-*/
+ * @author Evan Wilbur
+ * @class CSCI 1111
+ * @section 10
+ * @description Completion of a given set of problems involving loops.
+ *              This didn't take a .... *while*. Bah dum che
+ */
 
 #include <stdlib.h>
 #include <stdio.h>
