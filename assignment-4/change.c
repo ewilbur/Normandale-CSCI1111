@@ -23,7 +23,6 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#define DEVELOPMENT
 #define TENDER_STRING_LENGTH 32
 #define DEFAULT_BUFFER_SIZE 32
 
@@ -106,7 +105,7 @@ int main() {
  */
 int get_user_cents(const char *prompt, size_t buffer_size) {
     char *currency_str = (char*)malloc(sizeof(char) * buffer_size);
-    void *free_temp = currency_str;
+    void * const alloc_p = currency_str;
     int currency_amount = 0;
 
     /* | Return error if no memory can be allocated for the user input */
@@ -135,7 +134,7 @@ int get_user_cents(const char *prompt, size_t buffer_size) {
         }
     } while (currency_amount < 0);
 
-    free(free_temp);
+    free(alloc_p);
     return currency_amount;
 }
 
