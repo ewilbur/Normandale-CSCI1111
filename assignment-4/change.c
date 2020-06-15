@@ -70,33 +70,31 @@ int main() {
     int user_paid_cents = 0;
     int user_owed_cents = 0;
 
-    /* | Initialize the change owed to zero */
-    memset(&change_owed, 0, sizeof(change_owed));
+    do {
+        /* | Initialize the change owed to zero */
+        memset(&change_owed, 0, sizeof(change_owed));
+        /* | Prompt the user a message and store the parse cent input into their
+         * respective variables
+         */
+        user_owed_cents = get_user_cents("Enter the amount you owed: ",
+                                         USER_INPUT_BUFFER_SIZE);
+        user_paid_cents = get_user_cents("Enter the amount you paid: ",
+                                         USER_INPUT_BUFFER_SIZE);
 
-    /* | Prompt the user a message and store the parse cent input into their
-     * respective variables
-     */
-    user_owed_cents = get_user_cents("Enter the amount you owed: ",
-                                     USER_INPUT_BUFFER_SIZE);
-    user_paid_cents = get_user_cents("Enter the amount you paid: ",
-                                     USER_INPUT_BUFFER_SIZE);
+        if (user_paid_cents < user_owed_cents)
+            /* ^ Can't make change if you paid less than you owe. */
+            printf("Cannot make change_owed. You did not give enough\n");
+        else {
+            /* ^ Otherwise, calculate the change and the bills/coins to pay it */
+            mkchange(&change_owed, user_paid_cents - user_owed_cents);
+            /* | And print it out */
+            render_tender(&change_owed);
+        }
 
-    if (user_paid_cents < user_owed_cents)
-        /* ^ Can't make change if you paid less than you owe. */
-        printf("Cannot make change_owed. You did not give enough\n");
-    else {
-        /* ^ Otherwise, calculate the change and the bills/coins to pay it */
-        mkchange(&change_owed, user_paid_cents - user_owed_cents);
-        /* | And print it out */
-        render_tender(&change_owed);
-    }
-
-    /* | Prompt the user if they want to go again */
-    printf("\nPress 'q' to quit. Otherwise, press any character to go again: ");
-    if (getchar() == 'q')
-        return 0;
-    /* TODO Make this into a do-while loop instead of a recursive call */
-    return main();
+        /* | Prompt the user if they want to go again */
+        printf("\nPress 'q' to quit. Otherwise, press any character to go again: ");
+    } while (getchar() != 'q');
+    return 0;
 }
 
 /* | Prompts the user to enter a monetary value, parses it, and returns the
