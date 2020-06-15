@@ -130,6 +130,11 @@ int get_user_cents(const char *prompt, size_t buffer_size) {
                     "error: invalid input on currency amount: %s\n",
                     currency_str);
         }
+        /* | Reset the currency_str pointer to the beginning of the allocated
+         *   memory. Not doing this could result in memory overflow since the
+         *   pointer value may change when we strip the whitespace.
+         */
+        currency_str = alloc_p;
     } while (currency_amount < 0);
 
     free(alloc_p);
