@@ -51,7 +51,12 @@ int main() {
     printf("Problem 9\n");
     loop_9();
 
-    /* system("pause"); */
+#if defined (_WIN32) || defined (_WIN64)
+    system("pause");
+#else
+    printf("Press any key to continue . . .");
+    getchar();
+#endif
 	return EXIT_SUCCESS;
 }
 
@@ -63,9 +68,11 @@ void loop_1(void) {
 }
 
 void loop_2(void) {
-    int i = 105;
-    while (i -= 5)
+    int i = 100;
+    while (i) {
         printf("%3d", i);
+        i -= 5;
+    }
     printf("\n\n");
 }
 
