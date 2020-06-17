@@ -57,7 +57,12 @@ int main() {
     printf("Problem 9\n");
     loop_9();
 
-    /* system("pause"); */
+#if defined (_WIN32) || defined (_WIN64)
+    system("pause");
+#else
+    printf("Press any key to continue . . .");
+    getchar();
+#endif
 	return EXIT_SUCCESS;
 }
 
