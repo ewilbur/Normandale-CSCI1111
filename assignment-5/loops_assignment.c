@@ -74,9 +74,11 @@ void loop_1(void) {
 }
 
 void loop_2(void) {
-    int i = 105;
-    while (i -= 5)
+    int i = 100;
+    while (i) {
         printf("%3d", i);
+        i -= 5;
+    }
     printf("\n\n");
 }
 
