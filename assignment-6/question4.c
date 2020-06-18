@@ -17,7 +17,8 @@ void sieve(size_t bound) {
     unsigned char *primer = (unsigned char *)calloc(bound, sizeof(unsigned char));
     primer[0] = primer[1] = 1;
     size_t i, j;
-    for (i = 2; i <= sqrt(bound); ++i) {
+    double cap = sqrt(bound);
+    for (i = 2; i <= cap; ++i) {
         if (primer[i] == 0) {
             for (j = 2; j * i < bound; ++j)
                 primer[i * j] = 1;
