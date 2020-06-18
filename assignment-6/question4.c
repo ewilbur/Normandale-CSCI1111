@@ -4,15 +4,6 @@
 
 void sieve(unsigned long long int);
 
-
-/* | This is to fix a bug that took over three hours to find. Basically,
- *   when reading a unsigned long long int from a function called via a
- *   returned pointer, the variable gets underflowed and causes undefined
- *   brehavior. It is fixed if you initialize the variable first to zero
- *   or if you put in the correct formatting string for scanf. Here we do
- *   both
- */
-
 void page296_9() {
     unsigned long long int user_bound = 0;
     printf("Enter an upper bound: ");
