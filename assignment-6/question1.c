@@ -5,6 +5,7 @@ void page296_1() {
     char ch;
     size_t num_newlines = 0, num_spaces = 0, num_else = 0;
     printf("Enter some text. When you are finished, enter '#'\n");
+    while (getchar() != '\n');
     while ((ch = getchar()) != '#') {
         switch (ch) {
             case '\n': 
