@@ -2,7 +2,7 @@
 #include <math.h>
 #include <stdlib.h>
 
-void sieve(size_t);
+void sieve(unsigned long long int);
 
 
 /* | This is to fix a bug that took over three hours to find. Basically,
@@ -12,38 +12,33 @@ void sieve(size_t);
  *   or if you put in the correct formatting string for scanf. Here we do
  *   both
  */
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
-const char format_string[] = "%llu";
-#else
-const char format_string[] = "%lu";
-#endif
 
 void page296_9() {
-    size_t user_bound = 0;
+    unsigned long long int user_bound = 0;
     printf("Enter an upper bound: ");
-    scanf(format_string, &user_bound);
+    scanf("%llu", &user_bound);
     sieve(user_bound + 1);
 }
 
 /* Simple prime sieve. Runs in n*sqrt(n)
  */
-void sieve(size_t bound) {
+void sieve(unsigned long long int bound) {
     unsigned char *primer = (unsigned char *)calloc(bound, sizeof(unsigned char));
     primer[0] = primer[1] = 1;
-    size_t i, j;
+    unsigned long long int i, j;
     double cap = sqrt(bound);
     for (i = 2; i <= cap; ++i) {
         if (primer[i] == 0) {
             for (j = 2; j * i < bound; ++j)
                 primer[i * j] = 1;
-            printf(format_string, i);
+            printf("%llu", i);
             printf("\n");
         }
     }
 
     for (; i < bound; ++i)
         if (primer[i] == 0) {
-            printf(format_string, i);
+            printf("%llu", i);
             printf("\n");
         }
     free(primer);
