@@ -1,5 +1,5 @@
 COMPILE = gcc
-FLAGS = -W -Wall -pedantic -ansi
+FLAGS = -W -Wall -Werror
 DEPS = question1.o question2.o question3.o question4.o
 
 all: $(DEPS)
