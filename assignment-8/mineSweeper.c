@@ -8,8 +8,27 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define UNTOUCHED -1
-#define BOMB -2
+static const int MAX_BOARD_HEIGHT = 20;
+static const int MAX_BOARD_WIDTH  = 20;
+
+enum {
+    BOMB = 'X',
+    UNTOUCHED = '.',
+    CLEAR = '_',
+};
+
+
+int main() {}
+
+#if 0
+
+enum {
+    UNTOUCHED = -1,
+    BOMB = -2,
+};
+
+/* #define UNTOUCHED -1 */
+/* #define BOMB -2 */
 #define MAX_GRID 20
 
 int getRand(int first, int last);
@@ -120,3 +139,4 @@ int getRand(int first, int last)
    amountOfNumbers = last - first + 1;
    return(rand() % amountOfNumbers + first);
 }
+#endif

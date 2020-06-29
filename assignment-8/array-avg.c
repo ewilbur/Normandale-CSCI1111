@@ -87,7 +87,7 @@ void *foldl(accumulator f, void *base, int *arr, int arr_size) {
 }
 
 void printScores(int a[MAX_TESTS], int n) {
-    foldl(print, a, a + 1, n - 1);
+    foldl(print, NULL, a, n);
     putchar('\n');
 }
 
