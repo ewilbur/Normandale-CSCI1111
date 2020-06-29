@@ -1,5 +1,11 @@
 /*
 		Minesweeper
+		
+		Finish the game
+		
+		Finish counting the untouched cells
+		use that function to finish the game.
+		In other words tell when they win or lose.
 
 */
 
@@ -8,14 +14,11 @@
 #include <stdlib.h>
 #include <time.h>
 
-enum {
-    UNTOUCHED = -1,
-    BOMB = -2,
-};
-
-/* #define UNTOUCHED -1 */
-/* #define BOMB -2 */
+#define UNTOUCHED -1
+#define BOMB -2
 #define MAX_GRID 20
+
+//#define DEBUG
 
 int getRand(int first, int last);
 void clearGrid(int grid[MAX_GRID][MAX_GRID], int n);
@@ -30,22 +33,36 @@ int countSurroundingBombs(int row, int col,
 		const int grid[MAX_GRID][MAX_GRID], int n);
 		
 void testBombCounter(const int grid[MAX_GRID][MAX_GRID], int n);
+void tryMove(int row, int col,  int grid[MAX_GRID][MAX_GRID], int n); 
+
+int countUntouched(const int grid[MAX_GRID][MAX_GRID], int n);
 
 int main()
 {
 	int mine_grid[MAX_GRID][MAX_GRID];
-	int n = 6;
+	int n = 4;
+	int row, col;
+	int blewUp = 0;
+	
 	
 	clearGrid(mine_grid, n);
-	
 	addBombs(mine_grid, n, 8);
-	
-	
 	printGrid(mine_grid, n);
-	
 	putchar('\n');
 	
-	testBombCounter(mine_grid, n);
+	do{
+		printf("enter row and col\n");
+		scanf("%d%d", &row, &col);
+		if (mine_grid[row][col] == BOMB){
+			printf("Bang!\n");
+			blewUp = 1;
+		}else{
+			tryMove(row, col, mine_grid, n);
+		}
+		putchar('\n');
+		printGrid(mine_grid, n);
+		putchar('\n');
+	}while(!blewUp );
 	
 }
 
@@ -66,7 +83,11 @@ int i, j;
 	
 	for(i = 0; i < n; ++i){ //run through rows
 		for(j = 0; j < n; ++j){//run through columns
-			printf("%3d", grid[i][j]);
+		//	if (grid[i][j]==BOMB || grid[i][j] == UNTOUCHED){
+		//		printf(" * ");
+		//	}else{
+				printf("%3d", grid[i][j]);
+		//	}
 		}//for j
 		printf("\n");
 	}	
@@ -105,10 +126,19 @@ void addBombs(int grid[MAX_GRID][MAX_GRID],
 int countSurroundingBombs(int row, int col,
 		const int grid[MAX_GRID][MAX_GRID], int n)
 {
-		int count = 0;
+		int count = 0, r, c;
+		int i, j;
 		
-		if(grid[row][col + 1] == BOMB)
-			++count;
+		for (i = -1; i <= 1; ++i){
+			for (j = -1; j <= 1; ++j){
+				r = row + i; c = col + j; 
+				if (i == 0 && j == 0)
+					continue;
+				if(r>= 0 && r < n && c >= 0 && c < n
+		   			&& grid[r][c] == BOMB)
+						++count;
+			}
+		}
 		
 		return count;
 }
@@ -124,4 +154,53 @@ int getRand(int first, int last)
    }
    amountOfNumbers = last - first + 1;
    return(rand() % amountOfNumbers + first);
+}
+
+void tryMove(int row, int col,  int grid[MAX_GRID][MAX_GRID], int n)
+{
+	int count;
+#ifdef DEBUG
+	printf("Entering tryMove(%d, %d ....)\n", row, col);
+#endif	
+		
+	if (grid[row][col] != UNTOUCHED){	
+#ifdef DEBUG
+        printf("%d %d already touched\n", row, col);
+	    printf("leaving tryMove(%d, %d ....)\n", row, col);
+#endif			
+		return; //already been visited
+	}
+	
+	count = countSurroundingBombs(row, col, grid, n);
+	grid[row][col] = count;
+	
+	if (count == 0){
+		int i, j, r, c;
+		for (i = -1; i <= 1; ++i){
+			for (j = -1; j <= 1; ++j){
+				r = row + i; c = col + j; 
+				if (i == 0 && j == 0)
+					continue;
+				if(r>= 0 && r < n && c >= 0 && c < n){
+					
+					tryMove(r, c, grid, n);
+#ifdef DEBUG
+					printf("%d %d\n", r, c);
+					printGrid(grid, n);
+					system("pause");
+#endif					
+					
+				}		
+			}
+		}
+	}
+#ifdef DEBUG
+	printf("Leaving tryMove(%d, %d ....)\n", row, col);
+#endif	
+}
+
+int countUntouched(const int grid[MAX_GRID][MAX_GRID], int n)
+{
+	
+	return 10;
 }
