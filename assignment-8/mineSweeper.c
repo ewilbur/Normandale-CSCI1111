@@ -14,32 +14,36 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define UNTOUCHED -1
-#define BOMB -2
 #define MAX_GRID 20
+
+static const int MAX_GRID_HEIGHT = MAX_GRID;
+static const int MAX_GRID_LENGTH = MAX_GRID;
+
+enum {
+    UNTOUCHED = -1,
+    BOMB = -2,
+};
 
 //#define DEBUG
 
 int getRand(int first, int last);
-void clearGrid(int grid[MAX_GRID][MAX_GRID], int n);
+void clearGrid(int grid[MAX_GRID_HEIGHT][MAX_GRID_LENGTH], int n);
 
-void addBombs(int grid[MAX_GRID][MAX_GRID], 
-				int n, int nBombs);
+void addBombs(int grid[MAX_GRID_HEIGHT][MAX_GRID_LENGTH], int n, int nBombs);
 				
 
-void printGrid(const int grid[MAX_GRID][MAX_GRID], int n);
+void printGrid(const int grid[MAX_GRID_HEIGHT][MAX_GRID_LENGTH], int n);
 
-int countSurroundingBombs(int row, int col,
-		const int grid[MAX_GRID][MAX_GRID], int n);
+int countSurroundingBombs(int row, int col, const int grid[MAX_GRID_HEIGHT][MAX_GRID_LENGTH], int n);
 		
-void testBombCounter(const int grid[MAX_GRID][MAX_GRID], int n);
-void tryMove(int row, int col,  int grid[MAX_GRID][MAX_GRID], int n); 
+void testBombCounter(const int grid[MAX_GRID_HEIGHT][MAX_GRID_LENGTH], int n);
+void tryMove(int row, int col,  int grid[MAX_GRID_HEIGHT][MAX_GRID_LENGTH], int n); 
 
-int countUntouched(const int grid[MAX_GRID][MAX_GRID], int n);
+int countUntouched(const int grid[MAX_GRID_HEIGHT][MAX_GRID_LENGTH], int n);
 
 int main()
 {
-	int mine_grid[MAX_GRID][MAX_GRID];
+	int mine_grid[MAX_GRID_HEIGHT][MAX_GRID_LENGTH];
 	int n = 4;
 	int row, col;
 	int blewUp = 0;
@@ -50,7 +54,7 @@ int main()
 	printGrid(mine_grid, n);
 	putchar('\n');
 	
-	do{
+	do {
 		printf("enter row and col\n");
 		scanf("%d%d", &row, &col);
 		if (mine_grid[row][col] == BOMB){
@@ -66,7 +70,7 @@ int main()
 	
 }
 
-void clearGrid(int grid[MAX_GRID][MAX_GRID], int n)
+void clearGrid(int grid[MAX_GRID_HEIGHT][MAX_GRID_LENGTH], int n)
 {
 	int i, j;
 	
@@ -77,7 +81,7 @@ void clearGrid(int grid[MAX_GRID][MAX_GRID], int n)
 	}
 }
 
-void printGrid(const int grid[MAX_GRID][MAX_GRID], int n)
+void printGrid(const int grid[MAX_GRID_HEIGHT][MAX_GRID_LENGTH], int n)
 {
 int i, j;
 	
@@ -93,7 +97,7 @@ int i, j;
 	}	
 }
 
-void testBombCounter(const int grid[MAX_GRID][MAX_GRID], int n)
+void testBombCounter(const int grid[MAX_GRID_HEIGHT][MAX_GRID_LENGTH], int n)
 {
 	int i, j, count;
 	
@@ -106,7 +110,7 @@ void testBombCounter(const int grid[MAX_GRID][MAX_GRID], int n)
 	}	
 }
 
-void addBombs(int grid[MAX_GRID][MAX_GRID], 
+void addBombs(int grid[MAX_GRID_HEIGHT][MAX_GRID_LENGTH], 
 				int n, int nBombs)
 {
 	int row, col, i;
@@ -124,7 +128,7 @@ void addBombs(int grid[MAX_GRID][MAX_GRID],
 }
 
 int countSurroundingBombs(int row, int col,
-		const int grid[MAX_GRID][MAX_GRID], int n)
+		const int grid[MAX_GRID_HEIGHT][MAX_GRID_LENGTH], int n)
 {
 		int count = 0, r, c;
 		int i, j;
@@ -156,7 +160,7 @@ int getRand(int first, int last)
    return(rand() % amountOfNumbers + first);
 }
 
-void tryMove(int row, int col,  int grid[MAX_GRID][MAX_GRID], int n)
+void tryMove(int row, int col,  int grid[MAX_GRID_HEIGHT][MAX_GRID_LENGTH], int n)
 {
 	int count;
 #ifdef DEBUG
@@ -199,7 +203,7 @@ void tryMove(int row, int col,  int grid[MAX_GRID][MAX_GRID], int n)
 #endif	
 }
 
-int countUntouched(const int grid[MAX_GRID][MAX_GRID], int n)
+int countUntouched(const int grid[MAX_GRID_HEIGHT][MAX_GRID_LENGTH], int n)
 {
 	
 	return 10;
