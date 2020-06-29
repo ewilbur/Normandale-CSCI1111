@@ -1,30 +1,15 @@
-/*
-
-   CSCI 1111
-   This example illustrates using an array to
-   process a set of test scores
-   make sure the file test_scores.txt is in the same directory as this file
-
-   Your assignment is to finish the following functions:
-
-   printScores
-
-   findMinScore
-
-   findMaxScore
-
-   calculateAverage
-
-
-*/
-
-
-
+/* This program uses the higher order function foldl in order to find the
+ * required values. Foldl is just a catamorphism.
+ */
 #include <stdio.h>
 #include <stdlib.h>
 
 #define MAX_TESTS 100
 
+typedef void *(*accumulator)(void *, int*);
+
+/* Fold over the array, accumulating values */
+void *foldl(accumulator, void *, int *, int);
 
 void printScores(int a[MAX_TESTS], int n); //the list of function prototypes
 int readTestsFromFile(char *fileName, int t[MAX_TESTS]);
@@ -40,101 +25,83 @@ int main()
    float average;
 
    n = readTestsFromFile("test_scores.txt", test);
-   printf("%d scores read...\n", n);
-   printScores(test, n);
+   if (n > 0) {
+       printf("%d scores read...\n", n);
+       printScores(test, n);
 
-   average = calcAverage(test,n);
-   printf("avg = %.2f\n",  average);
+       average = calcAverage(test,n);
+       printf("avg = %.2f\n",  average);
 
-   printf("maximum score = %d\n", findMaxScore(test, n));
-   printf("minimum score = %d\n", findMinScore(test, n));   
-   system("pause");
-
-   
-
-   return EXIT_SUCCESS; 
-
-}
-
-
-
-/*
-
-   This function was written by Kevin Lee
-
-   it works, do not change!!!!
-
-*/
-
-int readTestsFromFile(char *fileName, int test[MAX_TESTS])
-{
-   int count = 0;
-   int value;
-   FILE *filePtr;
-
-   filePtr = fopen(fileName, "r");
-
-   if( filePtr == NULL)
-   {
-      printf("Unable to find the data file\n");
-      return 0;
+       printf("maximum score = %d\n", findMaxScore(test, n));
+       printf("minimum score = %d\n", findMinScore(test, n));
    }
-
-
-   do{
-     fscanf(filePtr, "%d", &value);
-
-     if(value > -1){
-            test[count] = value;
-            ++count;
-     }
-
-   }while(value > -1 && count < MAX_TESTS);
-
-  return count;
+#if defined(WIN32)
+   system("pause");
+#else
+   printf("Enter any key to continue... \n");
+   getchar();
+#endif
+    return EXIT_SUCCESS;
 }
 
+int readTestsFromFile(char *fileName, int test[MAX_TESTS]) {
+    int count = 0;
+    FILE *filePtr = fopen(fileName, "r");
 
+    if(filePtr == NULL) {
+        printf("Unable to find the data file\n");
+        return 0;
+    }
+    do {
+        fscanf(filePtr, "%d", test + count);
+        ++count;
+    } while(test[count - 1] != -1 && count < MAX_TESTS);
 
-void printScores(int a[MAX_TESTS], int n)
-{
-    printf("printScores under construction\n");
+  return (count == MAX_TESTS) ? count : count - 1;
 }
 
+/* Accumulating functions */
 
-
-float calcAverage(int test[MAX_TESTS], int n)
-
-{
-  float avg = 0.0;
-  
-
-  return avg;
+void *max(void *y, int *x) {
+    return (*x > *(int*)y) ? x : y;
 }
 
-
-
-int findMaxScore(int test[MAX_TESTS], int n)
-
-{
-	
-	int max = 999;
-
-   return max;
+void *min(void *y, int *x) {
+    return (*x < *(int*)y) ? x : y;
 }
 
-
-
-int findMinScore(int test[MAX_TESTS], int n)
-
-{
-
-   int min_score = -999;
- 
-   
-    return min_score;
-
+void *sum(void *y, int *x) {
+    *(int*)y += *x;
+    return y;
 }
 
+void *print(void *y, int *x) {
+    printf("%d ", *x);
+    return NULL;
+}
 
+void *foldl(accumulator f, void *base, int *arr, int arr_size) {
+    if (arr_size == 0)
+        return base;
+    return foldl(f, f(base, arr), arr + 1, arr_size - 1);
+}
 
+void printScores(int a[MAX_TESTS], int n) {
+    foldl(print, a, a + 1, n - 1);
+    putchar('\n');
+}
+
+float calcAverage(int test[MAX_TESTS], int n) {
+    int initial = 0;
+    return (float)(*(int*)foldl(sum, &initial, test, n)) / ((float)n);
+}
+
+int findMaxScore(int test[MAX_TESTS], int n) {
+    int initial = *test;
+	return *(int*)foldl(max, &initial, test, n);
+}
+
+int findMinScore(int test[MAX_TESTS], int n) {
+    int initial = *test;
+	return *(int*)foldl(min, &initial, test, n);
+}
