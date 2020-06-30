@@ -12,13 +12,13 @@ extern void page380_9(void);
 
 void do_exit(void);
 void flush_buffer(void);
-int prompt_user(const char *prompt);
+char prompt_user(const char *prompt);
 void print_menu(void);
-run_io get_problem(int);
+run_io get_problem(char);
 
 int main() {
     run_io user_problem = NULL;
-    int user_problem_number = 0;
+    char user_problem_number = 0;
 
     while (true) {
         user_problem_number = prompt_user("Select a problem to run or enter 'q' to quit: ");
@@ -33,28 +33,28 @@ void do_exit() {
     exit(EXIT_SUCCESS);
 }
 
-run_io get_problem(int problem_number) {
+run_io get_problem(char problem_number) {
     switch (problem_number) {
-        case 1: return page380_3;
-        case 2: return page380_6;
-        case 3: return page380_8;
-        case 4: return page380_9;
-        case 'q' - '0': return do_exit;
+        case '1': return page380_3;
+        case '2': return page380_6;
+        case '3': return page380_8;
+        case '4': return page380_9;
+        case 'q': return do_exit;
         default: return NULL;
     }
 }
 
-int prompt_user(const char *prompt) {
+char prompt_user(const char *prompt) {
     char problem_number_choice = 0;
     print_menu();
     printf("%s\n", prompt);
-    problem_number_choice  = getchar() - '0';
+    problem_number_choice  = getchar();
     flush_buffer();
     return problem_number_choice;
 }
 
 void print_menu() {
-    static const int problem_numbers[] = {        3,         6,         8,         9};
+    static const int problem_numbers[] = {3, 6, 8, 9};
     static const size_t NUM_OPTIONS    = sizeof(problem_numbers) / sizeof(int);
     int i;
     for (i = 0; i < NUM_OPTIONS; ++i)
