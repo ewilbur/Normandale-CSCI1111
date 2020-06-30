@@ -13,6 +13,7 @@ void page380_3() {
     c = getchar();
     printf("Enter number of rows: ");
     scanf("%d", &row);
+    flush_buffer();
     printf("Enter number of columns: ");
     scanf("%d", &col);
     print_char_box(c, col, row);

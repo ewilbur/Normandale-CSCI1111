@@ -19,7 +19,7 @@ void page380_9() {
 }
 
 double power(double b, int e) {
-    if (b == 0 && e == 0) return NAN;
+    if (e == 0 && b == 0) return NAN;
     if (b == 0) return 0;
     if (e == 0) return 1;
     if (e == 2) return b * b;
