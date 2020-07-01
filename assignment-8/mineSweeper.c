@@ -24,7 +24,7 @@ enum {
     BOMB = -2,
 };
 
-//#define DEBUG
+/* #define DEBUG */
 
 int getRand(int first, int last);
 void clearGrid(int grid[MAX_GRID_HEIGHT][MAX_GRID_LENGTH], int n);
@@ -62,6 +62,10 @@ int main()
 			blewUp = 1;
 		}else{
 			tryMove(row, col, mine_grid, n);
+            if (countUntouched(mine_grid, n) == 0) {
+                printf("Winner winner, chicken dinner!\n");
+                return 0;
+            }
 		}
 		putchar('\n');
 		printGrid(mine_grid, n);
@@ -154,7 +158,11 @@ int getRand(int first, int last)
    if (firstTime == 1){
       /*first time in this function, seed the random number generator */
        firstTime = 0;
+#ifdef DEBUG
+       srand(0);
+#else
 	   srand(time(NULL));
+#endif
    }
    amountOfNumbers = last - first + 1;
    return(rand() % amountOfNumbers + first);
@@ -203,8 +211,26 @@ void tryMove(int row, int col,  int grid[MAX_GRID_HEIGHT][MAX_GRID_LENGTH], int 
 #endif	
 }
 
-int countUntouched(const int grid[MAX_GRID_HEIGHT][MAX_GRID_LENGTH], int n)
-{
-	
-	return 10;
+int countUntouched(const int grid[MAX_GRID_HEIGHT][MAX_GRID_LENGTH], int n) {
+#ifdef DEBUG
+    printf("Entering countUntouched\n");
+#endif
+    int i, j, count = 0;
+    for (i = 0; i < n; ++i)
+        for (j = 0; j < n; ++j) {
+#ifdef DEBUG
+            printf("Checking i = %d, j = %d\n", i, j);
+#endif
+            if (grid[i][j] == UNTOUCHED) {
+#ifdef DEBUG
+                printf("Found i = %d, j = %d\n", i, j);
+#endif
+                ++count;
+            }
+        }
+
+#ifdef DEBUG
+    printf("Leaving countUntouched\n");
+#endif
+    return count;
 }
